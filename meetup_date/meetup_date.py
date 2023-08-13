@@ -1,8 +1,7 @@
 from datetime import date, timedelta
-from enum import Enum
 
 
-class Weekday(Enum):
+class Weekday:
     MONDAY = 0
     TUESDAY = 1
     WEDNESDAY = 2
@@ -28,6 +27,16 @@ def meetup_date(
     else:
         _weekday = weekday
 
+    print(
+        f"\nmeetup_date(\n  "
+        f"year={year},\n  "
+        f"month={month},\n  "
+        f"nth={nth},\n  "
+        f"weekday={weekday}\n"
+        f")"
+    )  # @todo debug
+    print(f"_weekday: {_weekday}")  # @todo debug
+
     days_in_week = 7
     if month < 1 or month > 12:
         raise ValueError("Month should be between 1-12!")
@@ -44,6 +53,10 @@ def meetup_date(
             days=somewhere_next_month.day
         )
         last_day_of_month_weekday = last_day_of_month.weekday()
+        print(f"last_day_of_month: {last_day_of_month}")  # @todo debug
+        print(
+            f"last_day_of_month_weekday: {last_day_of_month_weekday}"
+        )  # @todo debug
         if last_day_of_month_weekday != _weekday:
             if last_day_of_month_weekday > _weekday:
                 delta = last_day_of_month_weekday - _weekday
@@ -55,6 +68,8 @@ def meetup_date(
         last_weekday = last_weekday - timedelta(
             days=((nth * -1) - 1) * days_in_week
         )
+        print(f"last_weekday: {last_weekday}")  # @todo debug
+        print(f"last_weekday.month: {last_weekday.month}")  # @todo debug
         if last_weekday.month != month:
             raise ValueError("Out of month's scope!")
 
@@ -62,11 +77,16 @@ def meetup_date(
 
     first_day_of_month = date(year=year, month=month, day=1)
     first_day_of_month_weekday = first_day_of_month.weekday()
+    print(f"first_day_of_month: {first_day_of_month}")  # @todo debug
+    print(
+        f"first_day_of_month_weekday: {first_day_of_month_weekday}"
+    )  # @todo debug
     if first_day_of_month_weekday != _weekday:
         if first_day_of_month_weekday < _weekday:
-            delta = days_in_week - first_day_of_month_weekday
+            delta = _weekday - first_day_of_month_weekday
         else:
             delta = days_in_week - (first_day_of_month_weekday - _weekday)
+        print(f"delta: {delta}")  # @todo debug
         first_weekday = first_day_of_month + timedelta(days=delta)
     else:
         first_weekday = first_day_of_month
@@ -75,12 +95,15 @@ def meetup_date(
         first_weekday = first_weekday + timedelta(
             days=(nth - 1) * days_in_week
         )
-
+    print(f"first_weekday: {first_weekday}")  # @todo debug
+    print(f"first_weekday.month: {first_weekday.month}")  # @todo debug
     if first_weekday.month != month:
         raise ValueError("Out of month's scope!")
 
     return first_weekday
 
+
+print(f"\nWeekday.MONDAY: {Weekday.MONDAY}")  # @todo debug
 
 print("\n[B] Bonus1")  # @todo debug
 print(
@@ -124,3 +147,6 @@ print(
     "\n[i] SDHN", meetup_date(2010, 6, nth=-1, weekday=Weekday.FRIDAY)
 )  # @todo debug
 # SDHN 2010-06-25
+
+
+print("\n[i] datetime.date(2015, 9, 24)", meetup_date(2015, 9))  # @todo debug
